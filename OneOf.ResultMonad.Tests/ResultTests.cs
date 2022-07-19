@@ -1,4 +1,4 @@
-using result;
+using FluentAssertions;
 using Xunit;
 
 namespace OneOf.ResultMonad.Tests;
@@ -12,22 +12,22 @@ public class ResultTests
             .Map(ToFruit)
             .AndThen(ToOrange);
 
-        Assert.IsError
-
+        x.IsError.Should().BeTrue();
+        x.AsError.Should().Be(CustomError.ConversionError);
     }
 
-    private record Apple(string name);
-    private record Orange(string name);
-    private record Fruit(string name);
+    private record Apple(string Name);
+
+    private record Orange(string Name);
+
+    private record Fruit(string Name);
 
     private enum CustomError
     {
         ConversionError
-
     };
 
-    private Result<Apple, CustomError> CreateApple(string name) => new Apple(name);
-    private Fruit ToFruit(Apple apple) => new Fruit(apple.name);
-    private Result<Orange, CustomError> ToOrange(Fruit fruit) => CustomError.ConversionError;
-
+    private static Result<Apple, CustomError> CreateApple(string name) => new Apple(name);
+    private static Fruit ToFruit(Apple apple) => new(apple.Name);
+    private static Result<Orange, CustomError> ToOrange(Fruit fruit) => CustomError.ConversionError;
 }

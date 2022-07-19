@@ -1,7 +1,6 @@
-using OneOf;
 using OneOf.Types;
 
-namespace result;
+namespace OneOf.ResultMonad;
 
 public class Result<TOk, TErr> : OneOfBase<Success<TOk>, Error<TErr>>
 {
@@ -21,74 +20,74 @@ public class Result<TOk, TErr> : OneOfBase<Success<TOk>, Error<TErr>>
     public bool IsError => IsT1;
 
     public Result<TOk, TErr> AsOk => AsT0;
-    public Result<TOk, TErr> AsErr => AsT1;
+    public Result<TOk, TErr> AsError => AsT1;
 
     /// <summary>
     /// If Ok, transforms <c>TOk</c> into <c>TNew</c> using function <param>f</param>, leaving <c>Err</c> untouched.
     /// </summary>
     public Result<TNew, TErr> Map<TNew>(Func<TOk, TNew> f)
-    => this.Match<Result<TNew, TErr>>(
-        ok => f(ok.Value),
-        err => err
-    );
+        => Match<Result<TNew, TErr>>(
+            ok => f(ok.Value),
+            err => err
+        );
 
     /// <summary>
     /// If Ok, calls function <param>f</param>, returning <c>Result<TNew, TErr></c>.
     /// </summary>
     public Result<TNew, TErr> AndThen<TNew>(Func<TOk, Result<TNew, TErr>> f)
-    => this.Match(
-        ok => f(ok.Value),
-        err => err
-    );
+        => Match(
+            ok => f(ok.Value),
+            err => err
+        );
 
     /// <summary>
     /// If Error, transforms <c>TErr</c> into <c>TNew</c> using <param>f</param>.
     /// </summary>
     public Result<TOk, TNew> MapErr<TNew>(Func<TErr, TNew> f)
-    => this.Match<Result<TOk, TNew>>(
-        ok => ok,
-        err => f(err.Value)
-    );
+        => Match<Result<TOk, TNew>>(
+            ok => ok,
+            err => f(err.Value)
+        );
 
     /// <summary>
     /// If Ok, returns <c>TOk</c>. 
     /// If Error, calls function <param>f</param>, returning <c>TOk</c>.
     /// </summary>
     public TOk OkOr(Func<TOk> f)
-    => this.Match(
-        ok => ok.Value,
-        err => f()
-    );
+        => Match(
+            ok => ok.Value,
+            err => f()
+        );
 
     /// <summary>
     /// If TOk, returns <c>TOk</c>. 
     /// If Error, returns <param>defaultValue</param>.
     /// </summary>
     public TOk OkOrDefault(TOk defaultValue)
-    => this.Match(
-        ok => ok.Value,
-        err => defaultValue
-    );
+        => Match(
+            ok => ok.Value,
+            err => defaultValue
+        );
 
     /// <summary>
     /// If Ok, returns <param>other</param>.
     /// If Error, returns <c>TErr</c>;
     /// </summary>
     public Result<TNew, TErr> And<TNew>(Result<TNew, TErr> other)
-    => this.Match(
-        ok => other,
-        err => err.Value
-    );
+        => Match(
+            ok => other,
+            err => err.Value
+        );
 
     /// <summary>
     /// If Ok, returns <c>TOk</c>. 
     /// If Error, returns <c>null</c>;
     /// </summary>
     public TOk? ToNullable()
-    => this.Match<TOk?>(
-        ok => ok.Value,
-        err => default(TOk)
-    );
+        => Match<TOk?>(
+            ok => ok.Value,
+            err => default(TOk)
+        );
 }
 
 public class Option<TOk> : Result<TOk, None>
