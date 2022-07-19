@@ -31,6 +31,12 @@ public class Result<TOk, TErr> : OneOfBase<Success<TOk>, Error<TErr>>
             err => err
         );
 
+    public async Task<Result<TNew, TErr>> MapAsync<TNew>(Func<TOk, Task<TNew>> f)
+        => await Match<Task<Result<TNew, TErr>>>(
+            async ok => await f(ok.Value),
+            async err => await Task.FromResult(err)
+        );
+
     /// <summary>
     /// If Ok, calls function <param>f</param>, returning <c>Result<TNew, TErr></c>.
     /// </summary>
@@ -38,6 +44,12 @@ public class Result<TOk, TErr> : OneOfBase<Success<TOk>, Error<TErr>>
         => Match(
             ok => f(ok.Value),
             err => err
+        );
+
+    public async Task<Result<TNew, TErr>> AndThenAsync<TNew>(Func<TOk, Task<Result<TNew, TErr>>> f)
+        => await Match(
+            ok => f(ok.Value),
+            err => Task.FromResult(new Result<TNew, TErr>(err))
         );
 
     /// <summary>
@@ -48,6 +60,12 @@ public class Result<TOk, TErr> : OneOfBase<Success<TOk>, Error<TErr>>
             ok => ok,
             err => f(err.Value)
         );
+    
+    public async Task<Result<TOk, TNew>> MapErrAsync<TNew>(Func<TErr, Task<TNew>> f)
+        => await Match<Task<Result<TOk, TNew>>>(
+            async ok => await Task.FromResult(ok),
+            async err => await f(err.Value)
+        );
 
     /// <summary>
     /// If Ok, returns <c>TOk</c>. 
@@ -56,6 +74,12 @@ public class Result<TOk, TErr> : OneOfBase<Success<TOk>, Error<TErr>>
     public TOk OkOr(Func<TOk> f)
         => Match(
             ok => ok.Value,
+            err => f()
+        );
+    
+    public async Task<TOk> OkOrAsync(Func<Task<TOk>> f)
+        => await Match(
+            ok => Task.FromResult(ok.Value),
             err => f()
         );
 
