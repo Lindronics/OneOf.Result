@@ -1,9 +1,6 @@
 name: .NET build, test, release
 
-on:
-  push:
-    branches:
-      - master
+on: push
 
 jobs:
   build:
