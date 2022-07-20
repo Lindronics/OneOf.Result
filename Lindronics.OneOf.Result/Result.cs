@@ -1,6 +1,7 @@
+using OneOf;
 using OneOf.Types;
 
-namespace OneOf.ResultMonad;
+namespace Lindronics.OneOf.Result;
 
 public static class Result
 {

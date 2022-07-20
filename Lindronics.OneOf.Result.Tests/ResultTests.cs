@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Xunit;
 
-namespace OneOf.ResultMonad.Tests;
+namespace Lindronics.OneOf.Result.Tests;
 
 public class ResultTests
 {
