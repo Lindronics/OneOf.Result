@@ -37,7 +37,7 @@ jobs:
         id: publish_nuget
         uses: brandedoutcast/publish-nuget@v2
         with:
-          PROJECT_FILE_PATH: OneOf/ResultMonad.csproj
+          PROJECT_FILE_PATH: Lindronics.OneOf.Result/Lindronics.OneOf.Result.csproj
           TAG_COMMIT: true
           TAG_FORMAT: v*
           NUGET_KEY: ${{secrets.NUGET_API_KEY}}
