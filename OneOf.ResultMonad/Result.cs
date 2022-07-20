@@ -22,8 +22,8 @@ public class Result<TOk, TErr> : OneOfBase<Success<TOk>, Error<TErr>>
     public bool IsOk => IsT0;
     public bool IsError => IsT1;
 
-    public Result<TOk, TErr> AsOk => AsT0;
-    public Result<TOk, TErr> AsError => AsT1;
+    public TOk AsOk => AsT0.Value;
+    public TErr AsError => AsT1.Value;
 
     public Result<TNew, TErr> Map<TNew>(Func<TOk, TNew> f)
         => Match<Result<TNew, TErr>>(
