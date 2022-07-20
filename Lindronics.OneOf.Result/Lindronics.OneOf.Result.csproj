@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <PackageId>OneOf.ResultMonad</PackageId>
+        <PackageId>Lindronics.OneOf.Result</PackageId>
         <Authors>Niklas Lindorfer</Authors>
         <Copyright>Niklas Lindorfer</Copyright>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -10,11 +10,13 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/Lindronics/OneOf.ResultMonad</RepositoryUrl>
         <Nullable>enable</Nullable>
-        <PackageLicenseFile></PackageLicenseFile>
+        <AssemblyName>Lindronics.OneOf.Result</AssemblyName>
+        <RootNamespace>Lindronics.OneOf.Result</RootNamespace>
+        <PackageVersion>0.1.0</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="OneOf" Version="3.0.223"/>
+        <PackageReference Include="OneOf" Version="3.0.223" />
     </ItemGroup>
 
 </Project>
