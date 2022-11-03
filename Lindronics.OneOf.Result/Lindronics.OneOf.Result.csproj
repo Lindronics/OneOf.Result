@@ -8,7 +8,7 @@
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <ImplicitUsings>enable</ImplicitUsings>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <RepositoryUrl>https://github.com/Lindronics/OneOf.ResultMonad</RepositoryUrl>
+        <RepositoryUrl>https://github.com/Lindronics/OneOf.Result</RepositoryUrl>
         <Nullable>enable</Nullable>
         <AssemblyName>Lindronics.OneOf.Result</AssemblyName>
         <RootNamespace>Lindronics.OneOf.Result</RootNamespace>
@@ -16,7 +16,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="OneOf" Version="3.0.223" />
+        <PackageReference Include="OneOf" Version="3.0.*" />
     </ItemGroup>
 
 </Project>
