@@ -38,18 +38,6 @@ public class Result<TOk, TErr> : OneOfBase<Success<TOk>, Error<TErr>>
             async err => await Task.FromResult(err)
         );
 
-    public Result<TNew, TErr> AndThen<TNew>(Func<TOk, Result<TNew, TErr>> f)
-        => Match(
-            ok => f(ok.Value),
-            err => err
-        );
-
-    public async Task<Result<TNew, TErr>> AndThenAsync<TNew>(Func<TOk, Task<Result<TNew, TErr>>> f)
-        => await Match(
-            ok => f(ok.Value),
-            err => Task.FromResult(new Result<TNew, TErr>(err))
-        );
-
     public Result<TOk, TNew> MapErr<TNew>(Func<TErr, TNew> f)
         => Match<Result<TOk, TNew>>(
             ok => ok,
@@ -62,35 +50,56 @@ public class Result<TOk, TErr> : OneOfBase<Success<TOk>, Error<TErr>>
             async err => await f(err.Value)
         );
 
-    public Result<TOk, TErr> OkOrElse(Func<Result<TOk, TErr>> f)
+    public Result<TNew, TErr> AndThen<TNew>(Func<TOk, Result<TNew, TErr>> f)
         => Match(
-            ok => ok.Value,
-            err => f()
+            ok => f(ok.Value),
+            err => err
         );
 
-    public async Task<Result<TOk, TErr>> OkOrElseAsync(Func<Task<Result<TOk, TErr>>> f)
+    public Result<TOk, TErr> AndThen(Func<Result<TOk, TErr>> f) => AndThen(_ => f());
+
+    public async Task<Result<TNew, TErr>> AndThenAsync<TNew>(Func<TOk, Task<Result<TNew, TErr>>> f)
         => await Match(
-            ok => Task.FromResult(this),
-            err => f()
+            ok => f(ok.Value),
+            err => Task.FromResult(new Result<TNew, TErr>(err))
         );
 
-    public TOk AsOkOr(Func<TOk> f)
-        => Match(
-            ok => ok.Value,
-            err => f()
-        );
+    public async Task<Result<TNew, TErr>> AndThenAsync<TNew>(Func<Task<Result<TNew, TErr>>> f) =>
+        await AndThenAsync(_ => f());
 
-    public async Task<TOk> AsOkOrAsync(Func<Task<TOk>> f)
-        => await Match(
-            ok => Task.FromResult(ok.Value),
-            err => f()
-        );
+    public TOk Unwrap() => AsOk;
+    
+    public TErr UnwrapErr() => AsError;
 
-    public TOk AsOkOrDefault(TOk defaultValue)
+    public TOk UnwrapOr(TOk defaultValue)
         => Match(
             ok => ok.Value,
             err => defaultValue
         );
+
+    public TOk UnwrapOrElse(Func<TOk> f)
+        => Match(
+            ok => ok.Value,
+            err => f()
+        );
+
+    public async Task<TOk> UnwrapOrElseAsync(Func<Task<TOk>> f)
+        => await Match(
+            ok => Task.FromResult(ok.Value),
+            err => f()
+        );
+    
+    public TOk? UnwrapOrNull()
+        => Match<TOk?>(
+            ok => ok.Value,
+            err => default(TOk)
+        );
+
+    // public async Task<Result<TOk, TErr>> UnwrapOrElseAsync(Func<Task<Result<TOk, TErr>>> f)
+    //     => await Match(
+    //         ok => Task.FromResult(this),
+    //         err => f()
+    //     );
 
     public Result<TNew, TErr> And<TNew>(Result<TNew, TErr> other)
         => Match(
@@ -98,16 +107,12 @@ public class Result<TOk, TErr> : OneOfBase<Success<TOk>, Error<TErr>>
             err => err.Value
         );
 
-    public TOk? ToNullable()
-        => Match<TOk?>(
-            ok => ok.Value,
-            err => default(TOk)
-        );
+
 }
 
-public class Option<TOk> : Result<TOk, None>
+public class Result<TOk> : Result<TOk, None>
 {
-    protected Option(OneOf<Success<TOk>, Error<None>> input) : base(input)
+    protected Result(OneOf<Success<TOk>, Error<None>> input) : base(input)
     {
     }
 }
