@@ -89,25 +89,23 @@ public class Result<TOk, TErr> : OneOfBase<Success<TOk>, Error<TErr>>
             err => f()
         );
     
-    public TOk? UnwrapOrNull()
+    public TOk? UnwrapOrDefault()
         => Match<TOk?>(
             ok => ok.Value,
-            err => default(TOk)
+            err => default
         );
-
-    // public async Task<Result<TOk, TErr>> UnwrapOrElseAsync(Func<Task<Result<TOk, TErr>>> f)
-    //     => await Match(
-    //         ok => Task.FromResult(this),
-    //         err => f()
-    //     );
+    
+    public TErr? UnwrapErrOrDefault()
+        => Match<TErr?>(
+            ok => default,
+            err => err.Value
+        );
 
     public Result<TNew, TErr> And<TNew>(Result<TNew, TErr> other)
         => Match(
             ok => other,
             err => err.Value
         );
-
-
 }
 
 public class Result<TOk> : Result<TOk, None>

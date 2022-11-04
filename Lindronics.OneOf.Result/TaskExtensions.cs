@@ -45,6 +45,9 @@ public static class TaskExtensions
     public static async Task<TOk> UnwrapOrElseAsync<TOk, TErr>(this Task<Result<TOk, TErr>> result, Func<Task<TOk>> f)
         => await await result.ContinueWith(r => r.Result.UnwrapOrElseAsync(f));
 
-    public static async Task<TOk?> UnwrapOrNull<TOk, TErr>(this Task<Result<TOk, TErr>> result)
-        => await result.ContinueWith(r => r.Result.UnwrapOrNull());
+    public static async Task<TOk?> UnwrapOrDefault<TOk, TErr>(this Task<Result<TOk, TErr>> result)
+        => await result.ContinueWith(r => r.Result.UnwrapOrDefault());
+    
+    public static async Task<TErr?> UnwrapErrOrDefault<TOk, TErr>(this Task<Result<TOk, TErr>> result)
+        => await result.ContinueWith(r => r.Result.UnwrapErrOrDefault());
 }

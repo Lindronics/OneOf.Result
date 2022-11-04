@@ -67,12 +67,14 @@ public class ResultTests
         var defaultRes = new FakeResource(5);
 
         fakeApi.GetResource(successRes).UnwrapOr(defaultRes).Should().Be(successRes);
-        fakeApi.GetResource(successRes).UnwrapOrNull().Should().Be(successRes);
+        fakeApi.GetResource(successRes).UnwrapOrDefault().Should().Be(successRes);
+        fakeApi.GetResource(successRes).UnwrapErrOrDefault().Should().Be(null);
         fakeApi.GetResource(successRes).UnwrapOrElse(() => defaultRes).Should().Be(successRes);
 
         fakeApi.GetResource(null).UnwrapOr(defaultRes).Should().Be(defaultRes);
         fakeApi.GetResource(null).UnwrapOrElse(() => defaultRes).Should().Be(defaultRes);
-        fakeApi.GetResource(null).UnwrapOrNull().Should().Be(null);
+        fakeApi.GetResource(null).UnwrapOrDefault().Should().Be(null);
+        fakeApi.GetResource(null).UnwrapErrOrDefault().Should().Be(new ApiError());
     }
 
     [Fact]
@@ -83,13 +85,15 @@ public class ResultTests
         var defaultRes = new FakeResource(5);
 
         (await fakeApi.GetResourceAsync(successRes).UnwrapOr(defaultRes)).Should().Be(successRes);
-        (await fakeApi.GetResourceAsync(successRes).UnwrapOrNull()).Should().Be(successRes);
+        (await fakeApi.GetResourceAsync(successRes).UnwrapOrDefault()).Should().Be(successRes);
+        (await fakeApi.GetResourceAsync(successRes).UnwrapErrOrDefault()).Should().Be(null);
         (await fakeApi.GetResourceAsync(successRes).UnwrapOrElse(() => defaultRes)).Should().Be(successRes);
         (await fakeApi.GetResourceAsync(successRes).UnwrapOrElseAsync(() => Task.FromResult(defaultRes)))
             .Should().Be(successRes);
 
         (await fakeApi.GetResourceAsync(null).UnwrapOr(defaultRes)).Should().Be(defaultRes);
-        (await fakeApi.GetResourceAsync(null).UnwrapOrNull()).Should().Be(null);
+        (await fakeApi.GetResourceAsync(null).UnwrapOrDefault()).Should().Be(null);
+        (await fakeApi.GetResourceAsync(null).UnwrapErrOrDefault()).Should().Be(new ApiError());
         (await fakeApi.GetResourceAsync(null).UnwrapOrElse(() => defaultRes)).Should().Be(defaultRes);
         (await fakeApi.GetResourceAsync(null).UnwrapOrElseAsync(() => Task.FromResult(defaultRes)))
             .Should().Be(defaultRes);
