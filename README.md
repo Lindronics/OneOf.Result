@@ -4,7 +4,7 @@
 
 ## What?
 
-Adds a new `Result<TOk, TErr>` type built on the popular [OneOf](https://github.com/mcintyre321/OneOf) library.
+Adds a new `Result<TOk, TErr>` type built on top of the popular [OneOf](https://github.com/mcintyre321/OneOf) library.
 
 Defines many useful methods and `Task` extensions allowing for chaining operations, similar to the `Result` type in Rust.
 

@@ -17,7 +17,7 @@ public class Result<TOk, TErr> : OneOfBase<TOk, TErr>
 
     public static implicit operator Result<TOk, TErr>(TOk _) => new(_);
     public static implicit operator Result<TOk, TErr>(TErr _) => new(_);
-    
+
     public bool IsOk => IsT0;
     public bool IsError => IsT1;
 

@@ -32,7 +32,7 @@ public static class TaskExtensions
 
     public static async Task<TOk> Unwrap<TOk, TErr>(this Task<Result<TOk, TErr>> result)
         => await result.ContinueWith(r => r.Result.Unwrap());
-    
+
     public static async Task<TErr> UnwrapErr<TOk, TErr>(this Task<Result<TOk, TErr>> result)
         => await result.ContinueWith(r => r.Result.UnwrapErr());
 
@@ -47,7 +47,7 @@ public static class TaskExtensions
 
     public static async Task<TOk?> UnwrapOrDefault<TOk, TErr>(this Task<Result<TOk, TErr>> result)
         => await result.ContinueWith(r => r.Result.UnwrapOrDefault());
-    
+
     public static async Task<TErr?> UnwrapErrOrDefault<TOk, TErr>(this Task<Result<TOk, TErr>> result)
         => await result.ContinueWith(r => r.Result.UnwrapErrOrDefault());
 }
