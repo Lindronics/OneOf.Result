@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -19,9 +20,7 @@ public class ResultTests
     [MemberData(nameof(TestCases))]
     public void TestAndThenAndMap(FakeResource? resource, bool conversionSuccess)
     {
-        var api = new FakeApi();
-
-        var response = api.GetResource(resource)
+        var response = FakeApi.GetResource(resource)
             .MapErr(_ => new ConversionError())
             .MapErr(e => e)
             .AndThen(x => x.Convert(conversionSuccess))
@@ -41,9 +40,7 @@ public class ResultTests
     [MemberData(nameof(TestCases))]
     public async Task TestAndThenAndMapAsync(FakeResource? resource, bool conversionSuccess)
     {
-        var api = new FakeApi();
-
-        var response = await api.GetResourceAsync(resource)
+        var response = await FakeApi.GetResourceAsync(resource)
             .MapErrAsync(_ => Task.FromResult(new ConversionError()))
             .MapErr(e => e)
             .AndThenAsync(x => x.ConvertAsync(conversionSuccess))
@@ -62,40 +59,43 @@ public class ResultTests
     [Fact]
     public void TestUnwraps()
     {
-        var fakeApi = new FakeApi();
         var successRes = new FakeResource(1);
         var defaultRes = new FakeResource(5);
 
-        fakeApi.GetResource(successRes).UnwrapOr(defaultRes).Should().Be(successRes);
-        fakeApi.GetResource(successRes).UnwrapOrDefault().Should().Be(successRes);
-        fakeApi.GetResource(successRes).UnwrapErrOrDefault().Should().Be(null);
-        fakeApi.GetResource(successRes).UnwrapOrElse(() => defaultRes).Should().Be(successRes);
+        FakeApi.GetResource(successRes).UnwrapOr(defaultRes).Should().Be(successRes);
+        FakeApi.GetResource(successRes).UnwrapOrDefault().Should().Be(successRes);
+        FakeApi.GetResource(successRes).UnwrapErrOrDefault().Should().Be(null);
+        FakeApi.GetResource(successRes).UnwrapOrElse(() => defaultRes).Should().Be(successRes);
+        Assert.Throws<InvalidOperationException>(() => FakeApi.GetResource(new FakeResource(1)).UnwrapErr());
 
-        fakeApi.GetResource(null).UnwrapOr(defaultRes).Should().Be(defaultRes);
-        fakeApi.GetResource(null).UnwrapOrElse(() => defaultRes).Should().Be(defaultRes);
-        fakeApi.GetResource(null).UnwrapOrDefault().Should().Be(null);
-        fakeApi.GetResource(null).UnwrapErrOrDefault().Should().Be(new ApiError());
+        FakeApi.GetResource(null).UnwrapOr(defaultRes).Should().Be(defaultRes);
+        FakeApi.GetResource(null).UnwrapOrElse(() => defaultRes).Should().Be(defaultRes);
+        FakeApi.GetResource(null).UnwrapOrDefault().Should().Be(null);
+        FakeApi.GetResource(null).UnwrapErrOrDefault().Should().Be(new ApiError());
+        Assert.Throws<InvalidOperationException>(() => FakeApi.GetResource(null).Unwrap());
     }
 
     [Fact]
     public async Task TestUnwrapsAsync()
     {
-        var fakeApi = new FakeApi();
         var successRes = new FakeResource(1);
         var defaultRes = new FakeResource(5);
 
-        (await fakeApi.GetResourceAsync(successRes).UnwrapOr(defaultRes)).Should().Be(successRes);
-        (await fakeApi.GetResourceAsync(successRes).UnwrapOrDefault()).Should().Be(successRes);
-        (await fakeApi.GetResourceAsync(successRes).UnwrapErrOrDefault()).Should().Be(null);
-        (await fakeApi.GetResourceAsync(successRes).UnwrapOrElse(() => defaultRes)).Should().Be(successRes);
-        (await fakeApi.GetResourceAsync(successRes).UnwrapOrElseAsync(() => Task.FromResult(defaultRes)))
+        (await FakeApi.GetResourceAsync(successRes).UnwrapOr(defaultRes)).Should().Be(successRes);
+        (await FakeApi.GetResourceAsync(successRes).UnwrapOrDefault()).Should().Be(successRes);
+        (await FakeApi.GetResourceAsync(successRes).UnwrapErrOrDefault()).Should().Be(null);
+        (await FakeApi.GetResourceAsync(successRes).UnwrapOrElse(() => defaultRes)).Should().Be(successRes);
+        (await FakeApi.GetResourceAsync(successRes).UnwrapOrElseAsync(() => Task.FromResult(defaultRes)))
             .Should().Be(successRes);
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            FakeApi.GetResourceAsync(new FakeResource(1)).UnwrapErr());
 
-        (await fakeApi.GetResourceAsync(null).UnwrapOr(defaultRes)).Should().Be(defaultRes);
-        (await fakeApi.GetResourceAsync(null).UnwrapOrDefault()).Should().Be(null);
-        (await fakeApi.GetResourceAsync(null).UnwrapErrOrDefault()).Should().Be(new ApiError());
-        (await fakeApi.GetResourceAsync(null).UnwrapOrElse(() => defaultRes)).Should().Be(defaultRes);
-        (await fakeApi.GetResourceAsync(null).UnwrapOrElseAsync(() => Task.FromResult(defaultRes)))
+        (await FakeApi.GetResourceAsync(null).UnwrapOr(defaultRes)).Should().Be(defaultRes);
+        (await FakeApi.GetResourceAsync(null).UnwrapOrDefault()).Should().Be(null);
+        (await FakeApi.GetResourceAsync(null).UnwrapErrOrDefault()).Should().Be(new ApiError());
+        (await FakeApi.GetResourceAsync(null).UnwrapOrElse(() => defaultRes)).Should().Be(defaultRes);
+        (await FakeApi.GetResourceAsync(null).UnwrapOrElseAsync(() => Task.FromResult(defaultRes)))
             .Should().Be(defaultRes);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => FakeApi.GetResourceAsync(null).Unwrap());
     }
 }

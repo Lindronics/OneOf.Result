@@ -8,10 +8,10 @@ public record ApiError;
 
 public class FakeApi
 {
-    public Result<FakeResource, ApiError> GetResource(FakeResource? resource)
+    public static Result<FakeResource, ApiError> GetResource(FakeResource? resource)
         => resource is not null ? resource : new ApiError();
 
-    public async Task<Result<FakeResource, ApiError>> GetResourceAsync(FakeResource? resource)
+    public static async Task<Result<FakeResource, ApiError>> GetResourceAsync(FakeResource? resource)
         => resource is not null ? await Task.FromResult(resource) : await Task.FromResult(new ApiError());
 }
 
